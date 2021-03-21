@@ -165,7 +165,7 @@ cookie：
 
 #####	首部
 
-	![head](./TCPHEAD.png)
+![head](./TCPHEAD.png)
 
 	源端口(16) + 目的端口(16) + 
 	序号(32) + 确认号(32) + 
