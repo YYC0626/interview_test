@@ -7,6 +7,7 @@ import (
 
 /*
 
+ */
 func main() {
 	var str string
 	fmt.Scan(&str)
@@ -86,7 +87,8 @@ func decoder(code string) string {
 				}
 				temp[len(temp)-1] += repeat
 			}
-
+			//重复次数记录完成，flag重新置为false
+			flag = false
 			continue
 		}
 
@@ -108,21 +110,37 @@ func decoder(code string) string {
 	return result
 }
 
-*/
-
 /*
 递归做法：
 	遇到小括号则调用递归函数，其内部完成：获取repeat，获取repeatTime，返回拼接好的字符串和完成后的末尾下标
-*/
 
 func main() {
 	var str string
 	fmt.Scan(&str)
 
-	res, _ := recur(str, 0)
+	res := decodeStr(str)
 
 	fmt.Println(res)
 	return
+}
+
+func decodeStr(code string) string {
+	result := ""
+
+	var i int
+	for i = 0; i < len(code); i++ {
+		if code[i] == '(' {
+			var temp string
+			temp, i = recur(code, i+1)
+			result += temp
+			continue
+		}
+		if code[i] != '(' && code[i] != ')' && code[i] != '<' && code[i] != '>' {
+			result += string(code[i])
+		}
+		continue
+	}
+	return result
 }
 
 func recur(code string, index int) (string, int) {
@@ -132,35 +150,33 @@ func recur(code string, index int) (string, int) {
 	//从i开始遍历
 	i := index
 	for ; i < len(code); i++ {
-		//如果当前字符不是‘（’，说明是第一次遍历（非内层递归调用），直接附加在result后
-		if code[i] != '(' {
-			result += string(code[i])
-			continue
-		}
-
-		//是‘（’
-		if code[i] == '(' {
-			//内层处理完，返回结果和下标，此处是‘》’的下标，因为循环体结束还有i++操作
-			temp, i = recur(code, i+1)
-
-			result += temp
-			return result, i
-		}
 
 		//
 		if code[i] == ')' {
 			//循环体结束了，在这里更新repeat的值
 			//获取重复次数
 			//更新返回值字符串
-			n := 0
 			//i是’）‘，i+1就是‘《’
-			n, i = getTime(code, i+1)
+			n, newindex := getTime(code, i+1)
 			for j := 0; j < n; j++ {
 				result += temp
 			}
 
-			return result, i
+			return result, newindex
 		}
+
+		//是‘（’
+		if code[i] == '(' {
+			var newi int
+
+			result += temp
+			//内层处理完，返回结果和下标，此处是‘》’的下标，因为循环体结束还有i++操作
+			temp, newi = recur(code, i+1)
+
+			result += temp
+			return result, newi
+		}
+
 		temp += string(code[i])
 
 	}
@@ -184,7 +200,13 @@ func getTime(code string, index int) (int, int) {
 	return -1, index
 }
 
+*/
+
 /*
+
+
+//这是之前写的，觉得有问题
+
 func main() {
 	var str string
 	fmt.Scan(&str)
