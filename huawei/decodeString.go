@@ -7,7 +7,6 @@ import (
 
 /*
 
- */
 func main() {
 	var str string
 	fmt.Scan(&str)
@@ -110,9 +109,15 @@ func decoder(code string) string {
 	return result
 }
 
+*/
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*
 递归做法：
 	遇到小括号则调用递归函数，其内部完成：获取repeat，获取repeatTime，返回拼接好的字符串和完成后的末尾下标
+
+*/
 
 func main() {
 	var str string
@@ -124,6 +129,7 @@ func main() {
 	return
 }
 
+//题解函数，开启主循环
 func decodeStr(code string) string {
 	result := ""
 
@@ -133,7 +139,7 @@ func decodeStr(code string) string {
 			var temp string
 			temp, i = recur(code, i+1)
 			result += temp
-			continue
+			//		continue
 		}
 		if code[i] != '(' && code[i] != ')' && code[i] != '<' && code[i] != '>' {
 			result += string(code[i])
@@ -143,46 +149,42 @@ func decodeStr(code string) string {
 	return result
 }
 
+//递归函数：接收原字符串和传递而来的下标
+//该函数是碰到'('时调用的，所以碰到')'就要结束自身的循环，然后完成处理
 func recur(code string, index int) (string, int) {
 	result := ""
 	temp := ""
 
 	//从i开始遍历
 	i := index
-	for ; i < len(code); i++ {
 
-		//
-		if code[i] == ')' {
-			//循环体结束了，在这里更新repeat的值
-			//获取重复次数
-			//更新返回值字符串
-			//i是’）‘，i+1就是‘《’
-			n, newindex := getTime(code, i+1)
-			for j := 0; j < n; j++ {
-				result += temp
-			}
-
-			return result, newindex
-		}
-
-		//是‘（’
+	for ; code[i] != ')'; i++ {
+		//再次遇到则继续递归调用
 		if code[i] == '(' {
-			var newi int
+			s, ind := recur(code, i+1)
 
-			result += temp
-			//内层处理完，返回结果和下标，此处是‘》’的下标，因为循环体结束还有i++操作
-			temp, newi = recur(code, i+1)
-
-			result += temp
-			return result, newi
+			//重复串处理后加在temp之后，i值更新
+			temp += s
+			i = ind
 		}
 
 		temp += string(code[i])
-
 	}
-	return result, i
+
+	//循环体结束了，在这里更新repeat的值
+	//获取重复次数
+	//更新返回值字符串
+	//i是’）‘，i+1就是‘《’
+	n, newindex := getTime(code, i+1)
+	for j := 0; j < n; j++ {
+		result += temp
+	}
+
+	return result, newindex
+
 }
 
+//该函数获取尖括号内的次数
 func getTime(code string, index int) (int, int) {
 	time := ""
 	for i := index; i < len(code); i++ {
@@ -192,7 +194,7 @@ func getTime(code string, index int) (int, int) {
 		}
 		if code[i] == '>' {
 			num, _ := strconv.Atoi(time)
-			return num, i
+			return num, i + 1
 		}
 		time += string(code[i])
 	}
@@ -200,8 +202,7 @@ func getTime(code string, index int) (int, int) {
 	return -1, index
 }
 
-*/
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
 
 
